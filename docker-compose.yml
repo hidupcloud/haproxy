@@ -1,0 +1,62 @@
+version: "3"
+services:
+  haproxy:
+    image: hidupcloud/haproxy:1.5
+    volumes:
+      - ./certs/one.com.io.pem:/usr/local/etc/haproxy/one.com.pem
+      - ./certs/two.com.io.pem:/usr/local/etc/haproxy/two.com.pem
+      - ./certs/three.com.io.pem:/usr/local/etc/haproxy/three.com.pem
+      - ./passwd/user1.pwd:/tmp/user1.pwd
+      - ./passwd/user2.pwd:/tmp/user2.pwd
+    environment:
+      HAPROXY_JSON_CFG: |
+        {
+          "domains":
+            [
+              {
+                "name": "one",
+                "url": "one.com",
+                "server": "localhost",
+                "port": "8080",
+                "basicauth": true,
+                "userlist": "myusers"
+              },
+              {
+                "name": "two",
+                "url": "two.com",
+                "server": "localhost",
+                "port": "8081"
+              },
+              {
+                "name": "three",
+                "url": "three.com",
+                "server": "localhost",
+                "port": "8082"
+              }
+            ],
+          "certs":
+            [
+              "/usr/local/etc/haproxy/one.com.pem",
+              "/usr/local/etc/haproxy/two.com.pem",
+              "/usr/local/etc/haproxy/three.com.pem"
+            ],
+          "userlist":
+            [
+              {
+                "name": "myusers",
+                "users":
+                  [
+                    {
+                      "login": "useru",
+                      "passtype": "insecure-password",
+                      "passfile": "/tmp/user1.pwd"
+                    },
+                    {
+                      "login": "users",
+                      "passtype": "password",
+                      "passfile": "/tmp/user2.pwd"
+                    }
+                  ]
+              }
+            ]
+        }
