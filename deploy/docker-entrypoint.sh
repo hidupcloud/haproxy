@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 set -e
 
 function query () { echo ${HAPROXY_JSON_CFG} | jq "$1" | sed 's/"//g'; }
